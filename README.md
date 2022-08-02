@@ -41,7 +41,7 @@ If you need the cell intensity for every frame in time (for when photobleaching 
   >> [fusion_locations] = FusionEventFinderV5(fusion_movie, cellMask, thresholdFactor, exposuretimems);
 7.	OUTPUT MINI FUSION MOVIES and ALIGNED INTENSITY TRACES: Once you have locations, crop the raw movie file to make mini movie sequences (25x25 pixels) around each location. These will be aligned in time for frame 50 to be the fusion point. If fusion happens in a frame < 50, empty frames are added at the start. The cell mask is used to normalize the fusion channel: (circle – cell avg intensity) / (max – cell avg intensity). An annulus (local background) is used to normalize the protein channel, this is dF/dFmax:(circle – annulus) / (max – annulus).   %this calls MiniStackFusionDataProcessV9.m
 This makes the following figures and outputs: 1) Show the onset of fusion point, the red dot is the zero point in time, 2) Aligned full traces for fusion, 3) aligned full traces for the protein channel. All aligned traces are written into excel (time, fusion, protein). 1 and 2 are shown below.
-  >> [fusion_mini, protein_mini, data] = FusionMiniMaker8(fusion_movie, protein_movie, fusion_locations,'3242F', '3242P', averageCellIntensityWholeMovieFusion);
+  >> [fusion_mini, protein_mini, data] = FusionMiniMaker8(fusion_movie, protein_movie, fusion_locations,'3242F', '3242P', avgfusioncellintensity_time);
 
 8.	SAVE WORKSPACE
 9.	COMPILE ALL EXCEL INTO ONE EXCEL AND PLOT
