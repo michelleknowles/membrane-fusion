@@ -8,7 +8,7 @@ Required:
 
 •	Software: Matlab and Matlab Toolbox “Image Processing”
 
-•	Files (here): stkwrite, stkread, CellMaskMaker3, FusionDataCompile, FusionEventFinderV5, MiniStackFusionDataProcessV9, maskMaker3, LoadMovie, FusionMiniMaker8, CellIntensityInTime
+•	Files (here): stkwrite, stkread, CellMaskMaker3, FusionDataCompile, FusionEventFinderV5, MiniStackFusionDataProcessV10, maskMaker3, LoadMovie, FusionMiniMaker10, CellIntensityInTime
 
 •	Other Files (not ours): pkfind, bpass, shared here: https://site.physics.georgetown.edu/matlab/
 
@@ -36,14 +36,15 @@ If you need the cell intensity for every frame in time (for when photobleaching 
 6.	FIND FUSION LOCATIONS: This will calculate a difference movie, then bandpass filter. Watch your movie first to have some idea of the number of events. Is it 1 or 100? This will help you set a threshold. You will need bpass, pkfind.
   >> thresholdFactor = 0.5; 
   %vary this threshold, I prefer to find non-fusion events instead of missing fusion events. In the code, this is multiplied by the max intensity, so it is a scaling factor and can accommodate different expression levels. 
-  >> exposuretimems = 50; 
+  >> framerate_ms = 50; 
   %we stream at 50ms/frame and the fusion event finder code calculates a difference movie with a delta time of 0.5s. This will depend on how long events last and 0.5-1.25s works well for exosome secretion. The next command outputs XY position of potential fusion locations. 
-  >> [fusion_locations] = FusionEventFinderV5(fusion_movie, cellMask, thresholdFactor, exposuretimems);
-7.	OUTPUT MINI FUSION MOVIES and ALIGNED INTENSITY TRACES: Once you have locations, crop the raw movie file to make mini movie sequences (25x25 pixels) around each location. These will be aligned in time for frame 50 to be the fusion point. If fusion happens in a frame < 50, empty frames are added at the start. The cell mask is used to normalize the fusion channel: (circle – cell avg intensity) / (max – cell avg intensity). An annulus (local background) is used to normalize the protein channel, this is dF/dFmax:(circle – annulus) / (max – annulus).   %this calls MiniStackFusionDataProcessV9.m
+  >> [fusion_locations] = FusionEventFinderV5(fusion_movie, cellMask, thresholdFactor, framerate_ms);
+7.	OUTPUT MINI FUSION MOVIES and ALIGNED INTENSITY TRACES:Once you have locations, crop the raw movie file to make mini movie sequences (25x25 pixels) around each location. These will be aligned in time for frame 50 to be the fusion point. If fusion happens in a frame < 50, empty frames are added at the start. The annulus, a local background, pre-fusion is used to normalize each channel: (circle – annulus intensity pre-fusion) / (max circle - annulus intensity pre-fusion). The annulus increases in intensity post fusion as content leaves and this is why we use the pre-fusion annulus intensity. This calls MiniStackFusionDataProcessV10.m 
+
 This makes the following figures and outputs: 1) Show the onset of fusion point, the red dot is the zero point in time, 2) Aligned full traces for fusion, 3) aligned full traces for the protein channel. All aligned traces are written into excel (time, fusion, protein). 1 and 2 are shown below.
-  >> [fusion_mini, protein_mini, data] = FusionMiniMaker8(fusion_movie, protein_movie, fusion_locations,'3242F', '3242P', avgfusioncellintensity_time);
+  >> [fusion_mini, protein_mini, data] = FusionMiniMaker10(fusion_movie, protein_movie, fusion_locations,'3242F', '3242P', avgfusioncellintensity_time);
 
 8.	SAVE WORKSPACE
-9.	COMPILE ALL EXCEL INTO ONE EXCEL AND PLOT
+9.	CODE MAKES EXCEL SHEET AND CROPPED MOVIES OF EVERY EVENT. This is what we use to sort fusion, docking and visiting vesicles. 
 
  
